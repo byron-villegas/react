@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Core from '../../../core';
 
 function Add() {
@@ -51,6 +51,15 @@ function Add() {
             pattern: /^(M|F)$/,
             errors: []
         },
+        saldo: {
+            value: 0,
+            valid: false,
+            required: true,
+            pattern: /^\d+$/,
+            min: 1,
+            max: 999999999,
+            errors: []
+        },
     });
 
     const validateRut = (field) => {
@@ -95,8 +104,6 @@ function Add() {
     const validateField = (fieldName, field) => {
         let errors = [];
 
-        console.log(fieldName, field);
-
         if (fieldName === 'rut') {
             let rutValidation = validateRut(field);
             if (!rutValidation.valid) {
@@ -104,7 +111,7 @@ function Add() {
             }
         }
 
-        if (field.required && field.value.trim() === '') {
+        if (field.required && String(field.value).trim() === '') {
             errors.push('El campo es obligatorio.');
         }
 
@@ -120,20 +127,43 @@ function Add() {
             errors.push(`El largo maximo es ${field.maxLength}.`);
         }
 
-        if (field.min && parseInt(field.value) < field.min) {
+        if (field.min && parseInt(String(field.value)) < field.min) {
             errors.push(`El valor minimo es ${field.min}.`);
         }
 
-        if (field.max && parseInt(field.value) > field.max) {
+        if (field.max && parseInt(String(field.value)) > field.max) {
             errors.push(`El valor maximo es ${field.max}.`);
         }
-
-        console.log(errors);
 
         let valid = errors.length === 0;
 
         return { valid: valid, errors: errors };
     }
+
+    const validateForm = useCallback(() => {
+        let isValid = true;
+        let updatedForm = { ...form };
+
+        for (let key in updatedForm) {
+            if (updatedForm.hasOwnProperty(key)) {
+                let field = updatedForm[key];
+                let validations = validateField(key, field);
+                field.valid = validations.valid;
+                field.errors = validations.errors;
+
+                if (!field.valid) {
+                    isValid = false;
+                }
+            }
+        }
+
+        setForm(updatedForm);
+        return isValid;
+    }, []);
+
+    useEffect(() => {
+        validateForm();
+    }, [validateForm]);
 
     const handleValueChange = (e) => {
         const { id, value } = e.target;
@@ -142,7 +172,7 @@ function Add() {
 
         let field = form[fieldName];
 
-        console.log(`Field: ${fieldName}, Value: ${value}`);
+        console.log(fieldName, field);
 
         let formatedValue = value;
 
@@ -193,34 +223,18 @@ function Add() {
     }
 
     const processForm = () => {
-        let isValid = true;
-        let updatedForm = { ...form };
-
-        for (let key in updatedForm) {
-            if (updatedForm.hasOwnProperty(key)) {
-                let field = updatedForm[key];
-                let validations = validateField(key, field);
-                field.valid = validations.valid;
-                field.errors = validations.errors;
-
-                if (!field.valid) {
-                    isValid = false;
-                }
-            }
-        }
-
-        setForm(updatedForm);
+        let isValid = validateForm();
 
         if (isValid) {
             let user = {
-                rut: updatedForm.rut.value,
-                nombres: updatedForm.nombres.value,
-                apellidos: updatedForm.apellidos.value,
-                fechaNacimiento: updatedForm.fechaNacimiento.value,
-                edad: updatedForm.edad.value,
-                sexo: updatedForm.sexo.value
+                rut: form.rut.value,
+                nombres: form.nombres.value,
+                apellidos: form.apellidos.value,
+                fechaNacimiento: form.fechaNacimiento.value,
+                edad: form.edad.value,
+                sexo: form.sexo.value,
+                saldo: form.saldo.value
             };
-            console.log('User to save:', user);
             Core.UserService.saveUser(user);
         }
     }
@@ -230,6 +244,7 @@ function Add() {
             <h3 className="text-white">Add User</h3>
             <form onSubmit={processForm}>
                 <div className="mb-3">
+                    <label htmlFor="rut" className="form-label text-white">RUT</label>
                     <input
                         type="text"
                         className={"form-control" + (form.rut.valid ? '' : ' is-invalid')}
@@ -342,6 +357,24 @@ function Add() {
                     <label className="form-check-label text-white ms-1" htmlFor="sexoF">Femenino</label>
                     <span className="text-danger">
                         {form.sexo.errors && form.sexo.errors.map((error, index) => (
+                            <div key={index}>{error}</div>
+                        ))}
+                    </span>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="saldo" className="form-label text-white">Saldo</label>
+                    <input
+                        type="number"
+                        className={"form-control" + (form.saldo.valid ? '' : ' is-invalid')}
+                        id="saldo"
+                        required={form.saldo.required}
+                        min={form.saldo.min}
+                        max={form.saldo.max}
+                        value={form.saldo.value}
+                        onChange={handleValueChange}
+                    />
+                    <span className="text-danger">
+                        {form.saldo.errors && form.saldo.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>

@@ -1,0 +1,7 @@
+.pointer {
+    cursor: pointer;
+}
+
+.hovered td {
+    background-color: #414142 !important;
+}

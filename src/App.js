@@ -5,15 +5,14 @@ import { Home, User } from './modules';
 function App() {
   return (
     <>
-      <Home.Navbar />
       <Router>
+        <Home.Navbar />
         <Routes>
-          <Route path="/" element={<></>} />
           <Route path="/about" element={<Home.About />} />
           <Route path="/users" element={<User.Details />} />
         </Routes>
+        <Home.Footer />
       </Router>
-      <Home.Footer />
     </>
   );
 }
