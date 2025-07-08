@@ -240,7 +240,7 @@ function Add() {
     }
 
     return (
-        <div className="">
+        <div>
             <h3 className="text-white">Add User</h3>
             <form onSubmit={processForm}>
                 <div className="mb-3">

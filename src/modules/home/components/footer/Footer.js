@@ -35,7 +35,7 @@ function Footer() {
             <div className="container-fluid text-center vertical-line">
                 <p className="fw-light text-white mt-2">Copyright © {currentYear}. Todos los derechos reservados.</p>
             </div>
-        </footer >
+        </footer>
     );
 }
 
