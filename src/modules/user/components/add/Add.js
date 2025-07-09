@@ -196,7 +196,7 @@ function Add() {
                 edadField.value = age;
             }
 
-            let edadValidations = validateField(fieldName, field);
+            let edadValidations = validateField('edad', edadField);
 
             edadField.valid = edadValidations.valid;
             edadField.errors = edadValidations.errors;
