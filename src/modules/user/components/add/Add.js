@@ -161,6 +161,21 @@ function Add() {
         return isValid;
     }, []);
 
+    const reset = () => {
+        let updatedForm = { ...form };
+
+        for (let key in updatedForm) {
+            if (updatedForm.hasOwnProperty(key)) {
+                let field = updatedForm[key];
+                field.value = '';
+                field.valid = false;
+                field.errors = [];
+            }
+        }
+
+        setForm(updatedForm);
+    }
+
     useEffect(() => {
         validateForm();
     }, [validateForm]);
@@ -380,6 +395,7 @@ function Add() {
                     </span>
                 </div>
                 <button type="submit" className="btn btn-primary">Enviar</button>
+                <button type="reset" className="btn btn-secondary ms-2" onClick={reset}>Limpiar</button>
             </form>
         </div>
     );
