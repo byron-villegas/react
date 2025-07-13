@@ -3,63 +3,70 @@ import Core from '../../../core';
 
 function Add() {
     const [form, setForm] = useState({
-        rut: {
-            value: '',
-            required: true,
-            pattern: /\d{1,3}(?:\.\d{3}){2}-[0-9kK]$/,
-            minLength: 11,
-            maxLength: 12,
-            errors: []
+        fields: {
+            rut: {
+                value: '',
+                valid: false,
+                required: true,
+                pattern: /\d{1,3}(?:\.\d{3}){2}-[0-9kK]$/,
+                minLength: 11,
+                maxLength: 12,
+                errors: []
+            },
+            nombres: {
+                value: '',
+                valid: false,
+                required: true,
+                pattern: /^[aA-zZáéíóúñÁÉÍÓÚÑ\s]*$/,
+                minLength: 3,
+                maxLength: 50,
+                errors: []
+            },
+            apellidos: {
+                value: '',
+                valid: false,
+                required: true,
+                pattern: /^[aA-zZáéíóúñÁÉÍÓÚÑ\s]*$/,
+                minLength: 3,
+                maxLength: 50,
+                errors: []
+            },
+            fechaNacimiento: {
+                value: '',
+                valid: false,
+                required: true,
+                pattern: /^\d{4}-\d{2}-\d{2}$/,
+                minLength: 10,
+                maxLength: 10,
+                errors: []
+            },
+            edad: {
+                value: 0,
+                valid: false,
+                required: false,
+                pattern: /^\d+$/,
+                min: 1,
+                max: 120,
+                errors: []
+            },
+            sexo: {
+                value: '',
+                valid: false,
+                required: true,
+                pattern: /^(M|F)$/,
+                errors: []
+            },
+            saldo: {
+                value: 0,
+                valid: false,
+                required: true,
+                pattern: /^\d+$/,
+                min: 1,
+                max: 999999999,
+                errors: []
+            }
         },
-        nombres: {
-            value: '',
-            required: true,
-            pattern: /^[aA-zZáéíóúñÁÉÍÓÚÑ\s]*$/,
-            minLength: 3,
-            maxLength: 50,
-            errors: []
-        },
-        apellidos: {
-            value: '',
-            required: true,
-            pattern: /^[aA-zZáéíóúñÁÉÍÓÚÑ\s]*$/,
-            minLength: 3,
-            maxLength: 50,
-            errors: []
-        },
-        fechaNacimiento: {
-            value: '',
-            required: true,
-            pattern: /^\d{4}-\d{2}-\d{2}$/,
-            minLength: 10,
-            maxLength: 10,
-            errors: []
-        },
-        edad: {
-            value: 0,
-            valid: false,
-            required: false,
-            pattern: /^\d+$/,
-            min: 1,
-            max: 120,
-            errors: []
-        },
-        sexo: {
-            value: '',
-            valid: false,
-            required: true,
-            pattern: /^(M|F)$/,
-            errors: []
-        },
-        saldo: {
-            value: 0,
-            valid: false,
-            required: true,
-            pattern: /^\d+$/,
-            min: 1,
-            max: 999999999,
-            errors: []
-        },
+        valid: false
     });
 
     const validateRut = (field) => {
@@ -144,9 +151,9 @@ function Add() {
         let isValid = true;
         let updatedForm = { ...form };
 
-        for (let key in updatedForm) {
-            if (updatedForm.hasOwnProperty(key)) {
-                let field = updatedForm[key];
+        for (let key in updatedForm.fields) {
+            if (updatedForm.fields.hasOwnProperty(key)) {
+                let field = updatedForm.fields[key];
                 let validations = validateField(key, field);
                 field.valid = validations.valid;
                 field.errors = validations.errors;
@@ -164,9 +171,9 @@ function Add() {
     const reset = () => {
         let updatedForm = { ...form };
 
-        for (let key in updatedForm) {
-            if (updatedForm.hasOwnProperty(key)) {
-                let field = updatedForm[key];
+        for (let key in updatedForm.fields) {
+            if (updatedForm.fields.hasOwnProperty(key)) {
+                let field = updatedForm.fields[key];
                 field.value = '';
                 field.valid = false;
                 field.errors = [];
@@ -185,7 +192,7 @@ function Add() {
 
         let fieldName = id.toUpperCase().includes('SEXO') ? 'sexo' : id;
 
-        let field = form[fieldName];
+        let field = form.fields[fieldName];
 
         console.log(fieldName, field);
 
@@ -201,7 +208,7 @@ function Add() {
             const age = today.getFullYear() - birthDate.getFullYear();
             const monthDiff = today.getMonth() - birthDate.getMonth();
 
-            let edadField = form.edad;
+            let edadField = form.fields.edad;
 
             edadField.valid = true;
 
@@ -234,7 +241,15 @@ function Add() {
         field.valid = validations.valid;
         field.errors = validations.errors;
 
-        setForm({ ...form, field });
+        form.valid = Object.values(form.fields).every(field => field.valid);
+
+        setForm({
+            ...form,
+            fields: {
+                ...form.fields,
+                [fieldName]: field
+            }
+        });
     }
 
     const processForm = () => {
@@ -242,13 +257,13 @@ function Add() {
 
         if (isValid) {
             let user = {
-                rut: form.rut.value,
-                nombres: form.nombres.value,
-                apellidos: form.apellidos.value,
-                fechaNacimiento: form.fechaNacimiento.value,
-                edad: form.edad.value,
-                sexo: form.sexo.value,
-                saldo: form.saldo.value
+                rut: form.fields.rut.value,
+                nombres: form.fields.nombres.value,
+                apellidos: form.fields.apellidos.value,
+                fechaNacimiento: form.fields.fechaNacimiento.value,
+                edad: form.fields.edad.value,
+                sexo: form.fields.sexo.value,
+                saldo: form.fields.saldo.value
             };
             Core.UserService.saveUser(user);
         }
@@ -262,16 +277,16 @@ function Add() {
                     <label htmlFor="rut" className="form-label text-white">RUT</label>
                     <input
                         type="text"
-                        className={"form-control" + (form.rut.valid ? '' : ' is-invalid')}
+                        className={"form-control" + (form.fields.rut.valid ? '' : ' is-invalid')}
                         id="rut"
-                        minLength={form.rut.minLength}
-                        maxLength={form.rut.maxLength}
-                        value={form.rut.value}
-                        required={form.rut.required}
+                        minLength={form.fields.rut.minLength}
+                        maxLength={form.fields.rut.maxLength}
+                        value={form.fields.rut.value}
+                        required={form.fields.rut.required}
                         onChange={handleValueChange}
                     />
                     <span className="text-danger">
-                        {form.rut.errors && form.rut.errors.map((error, index) => (
+                        {form.fields.rut.errors && form.fields.rut.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>
@@ -280,16 +295,16 @@ function Add() {
                     <label htmlFor="nombres" className="form-label text-white">Nombres</label>
                     <input
                         type="text"
-                        className={"form-control" + (form.nombres.valid ? '' : ' is-invalid')}
+                        className={"form-control" + (form.fields.nombres.valid ? '' : ' is-invalid')}
                         id="nombres"
-                        minLength={form.nombres.minLength}
-                        maxLength={form.nombres.maxLength}
-                        value={form.nombres.value}
-                        required={form.nombres.required}
+                        minLength={form.fields.nombres.minLength}
+                        maxLength={form.fields.nombres.maxLength}
+                        value={form.fields.nombres.value}
+                        required={form.fields.nombres.required}
                         onChange={handleValueChange}
                     />
                     <span className="text-danger">
-                        {form.nombres.errors && form.nombres.errors.map((error, index) => (
+                        {form.fields.nombres.errors && form.fields.nombres.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>
@@ -298,16 +313,16 @@ function Add() {
                     <label htmlFor="apellidos" className="form-label text-white">Apellidos</label>
                     <input
                         type="text"
-                        className={"form-control" + (form.apellidos.valid ? '' : ' is-invalid')}
+                        className={"form-control" + (form.fields.apellidos.valid ? '' : ' is-invalid')}
                         id="apellidos"
-                        minLength={form.apellidos.minLength}
-                        maxLength={form.apellidos.maxLength}
-                        value={form.apellidos.value}
-                        required={form.apellidos.required}
+                        minLength={form.fields.apellidos.minLength}
+                        maxLength={form.fields.apellidos.maxLength}
+                        value={form.fields.apellidos.value}
+                        required={form.fields.apellidos.required}
                         onChange={handleValueChange}
                     />
                     <span className="text-danger">
-                        {form.apellidos.errors && form.apellidos.errors.map((error, index) => (
+                        {form.fields.apellidos.errors && form.fields.apellidos.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>
@@ -316,15 +331,15 @@ function Add() {
                     <label htmlFor="fechaNacimiento" className="form-label text-white">Fecha de nacimiento</label>
                     <input
                         type="date"
-                        className={"form-control" + (form.fechaNacimiento.valid ? '' : ' is-invalid')}
+                        className={"form-control" + (form.fields.fechaNacimiento.valid ? '' : ' is-invalid')}
                         id="fechaNacimiento"
                         min="1900-01-01"
-                        value={form.fechaNacimiento.value}
-                        required={form.fechaNacimiento.required}
+                        value={form.fields.fechaNacimiento.value}
+                        required={form.fields.fechaNacimiento.required}
                         onChange={handleValueChange}
                     />
                     <span className="text-danger">
-                        {form.fechaNacimiento.errors && form.fechaNacimiento.errors.map((error, index) => (
+                        {form.fields.fechaNacimiento.errors && form.fields.fechaNacimiento.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>
@@ -333,16 +348,16 @@ function Add() {
                     <label htmlFor="edad" className="form-label text-white">Edad</label>
                     <input
                         type="number"
-                        className={"form-control" + (form.edad.valid ? '' : ' is-invalid')}
+                        className={"form-control" + (form.fields.edad.valid ? '' : ' is-invalid')}
                         id="edad"
-                        required={form.edad.required}
-                        min={form.edad.min}
-                        max={form.edad.max}
-                        value={form.edad.value}
+                        required={form.fields.edad.required}
+                        min={form.fields.edad.min}
+                        max={form.fields.edad.max}
+                        value={form.fields.edad.value}
                         readOnly
                     />
                     <span className="text-danger">
-                        {form.edad.errors && form.edad.errors.map((error, index) => (
+                        {form.fields.edad.errors && form.fields.edad.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>
@@ -354,9 +369,9 @@ function Add() {
                         type="checkbox"
                         className="form-check-input"
                         id="sexoM"
-                        required={form.sexo.required && form.sexo.value === ''}
-                        value={form.sexo.value}
-                        checked={form.sexo.value === 'M'}
+                        required={form.fields.sexo.required && form.fields.sexo.value === ''}
+                        value={form.fields.sexo.value}
+                        checked={form.fields.sexo.value === 'M'}
                         onChange={handleValueChange}
                     />
                     <label className="form-check-label text-white ms-1 me-2" htmlFor="sexoM">Masculino</label>
@@ -364,14 +379,14 @@ function Add() {
                         type="checkbox"
                         className="form-check-input"
                         id="sexoF"
-                        required={form.sexo.required && form.sexo.value === ''}
-                        value={form.sexo.value}
-                        checked={form.sexo.value === 'F'}
+                        required={form.fields.sexo.required && form.fields.sexo.value === ''}
+                        value={form.fields.sexo.value}
+                        checked={form.fields.sexo.value === 'F'}
                         onChange={handleValueChange}
                     />
                     <label className="form-check-label text-white ms-1" htmlFor="sexoF">Femenino</label>
                     <span className="text-danger">
-                        {form.sexo.errors && form.sexo.errors.map((error, index) => (
+                        {form.fields.sexo.errors && form.fields.sexo.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>
@@ -380,21 +395,21 @@ function Add() {
                     <label htmlFor="saldo" className="form-label text-white">Saldo</label>
                     <input
                         type="number"
-                        className={"form-control" + (form.saldo.valid ? '' : ' is-invalid')}
+                        className={"form-control" + (form.fields.saldo.valid ? '' : ' is-invalid')}
                         id="saldo"
-                        required={form.saldo.required}
-                        min={form.saldo.min}
-                        max={form.saldo.max}
-                        value={form.saldo.value}
+                        required={form.fields.saldo.required}
+                        min={form.fields.saldo.min}
+                        max={form.fields.saldo.max}
+                        value={form.fields.saldo.value}
                         onChange={handleValueChange}
                     />
                     <span className="text-danger">
-                        {form.saldo.errors && form.saldo.errors.map((error, index) => (
+                        {form.fields.saldo.errors && form.fields.saldo.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
                     </span>
                 </div>
-                <button type="submit" className="btn btn-primary">Enviar</button>
+                <button type="submit" disabled={!form.valid} className="btn btn-primary">Enviar</button>
                 <button type="reset" className="btn btn-secondary ms-2" onClick={reset}>Limpiar</button>
             </form>
         </div>
