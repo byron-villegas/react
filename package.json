@@ -19,6 +19,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:e2e": "testcafe edge tests/e2e --reporter spec,html:testcafe-report.html",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -38,5 +39,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "testcafe": "^3.7.2",
+    "testcafe-reporter-html": "^1.4.6"
   }
 }

@@ -19,6 +19,10 @@ You may also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### `npm test:e2e`
+
+Launches the test runner for end to end tests in watch mode. that executes the tests inside **/tests/e2e** folder, and finalize with the report **testcafe-report.html** in root of project
+
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
