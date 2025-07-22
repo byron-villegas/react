@@ -285,7 +285,7 @@ function Add() {
                         required={form.fields.rut.required}
                         onChange={handleValueChange}
                     />
-                    <span className="text-danger">
+                    <span className="text-danger" id="rut-errors">
                         {form.fields.rut.errors && form.fields.rut.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
@@ -303,7 +303,7 @@ function Add() {
                         required={form.fields.nombres.required}
                         onChange={handleValueChange}
                     />
-                    <span className="text-danger">
+                    <span className="text-danger" id="nombres-errors">
                         {form.fields.nombres.errors && form.fields.nombres.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
@@ -321,7 +321,7 @@ function Add() {
                         required={form.fields.apellidos.required}
                         onChange={handleValueChange}
                     />
-                    <span className="text-danger">
+                    <span className="text-danger" id="apellidos-errors">
                         {form.fields.apellidos.errors && form.fields.apellidos.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
@@ -338,7 +338,7 @@ function Add() {
                         required={form.fields.fechaNacimiento.required}
                         onChange={handleValueChange}
                     />
-                    <span className="text-danger">
+                    <span className="text-danger" id="fechaNacimiento-errors">
                         {form.fields.fechaNacimiento.errors && form.fields.fechaNacimiento.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
@@ -356,7 +356,7 @@ function Add() {
                         value={form.fields.edad.value}
                         readOnly
                     />
-                    <span className="text-danger">
+                    <span className="text-danger" id="edad-errors">
                         {form.fields.edad.errors && form.fields.edad.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
@@ -385,7 +385,7 @@ function Add() {
                         onChange={handleValueChange}
                     />
                     <label className="form-check-label text-white ms-1" htmlFor="sexoF">Femenino</label>
-                    <span className="text-danger">
+                    <span className="text-danger" id="sexo-errors">
                         {form.fields.sexo.errors && form.fields.sexo.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
@@ -403,7 +403,7 @@ function Add() {
                         value={form.fields.saldo.value}
                         onChange={handleValueChange}
                     />
-                    <span className="text-danger">
+                    <span className="text-danger" id="saldo-errors">
                         {form.fields.saldo.errors && form.fields.saldo.errors.map((error, index) => (
                             <div key={index}>{error}</div>
                         ))}
