@@ -1,19 +1,7 @@
+import Utils from '../../../utils';
 import './List.css';
 
 function List({ users }) {
-
-    const onRowMouseMove = (e) => {
-        e.currentTarget.classList.add('hovered');
-    };
-
-    const onRowMouseLeave = (e) => {
-        e.currentTarget.classList.remove('hovered');
-    };
-
-    const formatBalance = (value) => {
-        let numberValue = Number(value) || 0;
-        return `$${numberValue.toLocaleString('es-CL')}`;
-    }
 
     return (
         <div>
@@ -33,7 +21,7 @@ function List({ users }) {
                 </thead>
                 <tbody>
                     {users.map((user, index) => (
-                        <tr key={index} className="pointer" onMouseMove={onRowMouseMove} onMouseLeave={onRowMouseLeave}>
+                        <tr key={index} className="pointer" onMouseMove={Utils.Events.Table.onRowMouseMove} onMouseLeave={Utils.Events.Table.onRowMouseLeave}>
                             <td>{index + 1}</td>
                             <td>{user.rut}</td>
                             <td>{user.nombres}</td>
@@ -41,7 +29,7 @@ function List({ users }) {
                             <td>{user.fechaNacimiento}</td>
                             <td>{user.edad}</td>
                             <td>{user.sexo}</td>
-                            <td>{formatBalance(user.saldo)}</td>
+                            <td>{Utils.Functions.formatBalance(user.saldo)}</td>
                         </tr>
                     ))}
                 </tbody>
