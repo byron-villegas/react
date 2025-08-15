@@ -1,5 +1,5 @@
-import formatBalance from "./format-balance";
+import Format from "./format";
 
-const Functions = { formatBalance };
+const Functions = { Format };
 
 export default Functions;

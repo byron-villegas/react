@@ -29,7 +29,7 @@ function List({ users }) {
                             <td>{user.fechaNacimiento}</td>
                             <td>{user.edad}</td>
                             <td>{user.sexo}</td>
-                            <td>{Utils.Functions.formatBalance(user.saldo)}</td>
+                            <td>{Utils.Functions.Format.balance(user.saldo)}</td>
                         </tr>
                     ))}
                 </tbody>
